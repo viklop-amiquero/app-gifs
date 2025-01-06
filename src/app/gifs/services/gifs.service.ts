@@ -13,7 +13,9 @@ export class GifsService {
     private _apiKey: string = 'KNWuFzmiwqJMKf7JAbkaeh3D5qHGWNYw'
     private _serviceUrl: string = 'https://api.giphy.com/v1/gifs'
 
-    constructor(private _http: HttpClient) { }
+    constructor(private _http: HttpClient) {
+        this.loadLocalStorage()
+    }
 
     get tagsHistory() {
         return [...this._tagsHistory]
@@ -28,7 +30,20 @@ export class GifsService {
 
         this._tagsHistory.unshift(tag)
         this._tagsHistory = this._tagsHistory.splice(0, 10)
+        this.saveLocalStorage()
+    }
 
+    private saveLocalStorage(): void {
+        localStorage.setItem('history', JSON.stringify(this._tagsHistory))
+    }
+
+    private loadLocalStorage(): void {
+        if (!localStorage.getItem('history')) return
+        this._tagsHistory = JSON.parse(localStorage.getItem('history')!)
+
+        if (this._tagsHistory.length === 0) return
+
+        this.searchTag(this._tagsHistory[0])
     }
 
     async searchTag(tag: string): Promise<void> {
@@ -45,15 +60,8 @@ export class GifsService {
             .subscribe(resp => {
 
                 this.gifList = resp.data
-                console.log(this.gifList);
-                // console.log(resp.data);
+                // console.log(this.gifList);
             })
-
-
-
-        // fetch('https://api.giphy.com/v1/gifs/search?api_key=KNWuFzmiwqJMKf7JAbkaeh3D5qHGWNYw&q=valorant&limit=10')
-        //     .then(rsp => rsp.json())
-        //     .then(data => console.log(data))
 
     }
 

@@ -6,6 +6,7 @@ import { Gif } from '../../interfaces/gifs.interfaces'
     templateUrl: './card-list.component.html',
     styleUrl: './card-list.component.css'
 })
+
 export class CardListComponent {
 
     @Input()
